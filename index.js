@@ -1,81 +1,91 @@
-$(function () {
-    syntax = {'print':'console.log', 'pass':'pass',
-              'def' : 'function', 'while' : 'while',
-              'if' : 'if'}; // map with syntax language
-    brackets = undefined; // Does we shuld write "}" in the end
+var cmd_with_braces = new Map([
+    ['def', 'function'], 
+    ['while', 'while'], 
+    ['if', 'if']
+  ]); // map with syntax language
+var simple_cmd = new Map([
+    ['print', 'Console.WriteLine']
+  ]);
+var num_space = 0; // sum of space in the string
+var brackets = []; // Does we shuld write "}" in the end
 
+$(function () {
     $('.convert-button').on('click', function(){ // click on convert button
+        num_space = 0; //reset the value
+        brackets = []; // reset the value
         var script = $('#your-script').val(); // remember input script
         var new_script = convertScript(script) // write new script
         $('#my-script').text(new_script); // output new script
     });
 })
 
+
 function convertScript(script) { // function for conver script
     var array  = script.split('\n') // split this script on strings
-    array.push('\n')
-    var new_script = '' // script on select language
+    array.push('\n') // add /n to the end of the array to see the array to the end
+    var new_script = "using System;\n\nnamespace MyProgram\n{\n    class Program\n    {\n        static void Main(string[] args)\n        {\n" // script on select language
     array.forEach(element => { // iterate over the script line by string
-        new_script += (searchCommand(element) + '\n'); // run function for search line
+        new_script += '            ' + (searchCommand(element) + '\n'); // run function for search command in line
     });
-    return new_script // return new script
+    return new_script +  '        }\n    }\n}'// return new script
 }
 
 function searchCommand(line){  // function for search command in line
-    var cmd = '';
-    var new_cmd = ''; // command in this string on select language
-    var check = true; // Does we check string to end?
-    var latest_symbol = ''; // Latest symbol in the string (for example: "{}", ";" )
-    var first_symbols = '';
-    if (brackets === 'open'){
-        if (line.slice(0,4) != '    ') {
-            brackets = 'close'
-            console.log(line,"скобки закроються")
-            first_symbols = '}\n'
-        }else if (line.slice(0,4) == '    ') {
-            first_symbols = '    '
-            line = line.slice(4,line.length)
-            console.log(line,"скобки открыты")
-        }
-        else{
-            console.log(line,'nothings')
+    if (line.indexOf('#') != -1){ // if it's comment 
+        return line.slice(0,line.indexOf('#')) + '//' + line.slice(line.indexOf('#'),line.length) // then return it and replace # with //
+    }
+
+    if (brackets[brackets.length-1] === 'open'){ // Check if brackets are open
+        console.log(line, line.slice(0, num_space*4) != '    '.repeat(num_space))
+        if (line.slice(0, num_space*4) != '    '.repeat(num_space)) {
+            brackets[brackets.length-1] = "close"
+            num_space -= 1
+            console.log('close')
         }
     }
-    for (let char of line){
-        cmd += char;
-        if (check){
-            if (syntax[cmd] != undefined){
-                if (syntax[cmd] === 'function' || syntax[cmd] === 'while' || syntax[cmd] === 'if'){
-                    if (syntax[cmd] === 'function'){
-                        new_cmd += syntax[cmd];
-                        latest_symbol = '{';
-                    }else{
-                        new_cmd += syntax[cmd] + ' (';
-                        latest_symbol = '){';
-                    }
-                    brackets = 'open'
-                    check = false;
-                }else{
-                    check = false;
-                    new_cmd += syntax[cmd];
-                    latest_symbol = ';';
-                }
-                cmd = '';
+
+    //console.log(line, brackets, num_space)
+
+    for (var [key, value] of cmd_with_braces ) {
+        if (line.indexOf(key) !== -1) {
+            brackets.push("open");
+            num_space += 1
+            if (value == "function"){
+                return '    '.repeat(num_space-1) + value + line.slice(key.length, line.length-1) + '{'
+            }else{
+                return '    '.repeat(num_space-1) + value + ' (' + line.slice(key.length, line.length-1) + '){'
             }
-        }else{
-            new_cmd += cmd;
-            cmd = '';
         }
     }
-    if (brackets === 'open'){
-        return first_symbols + new_cmd + latest_symbol
-    }else if (brackets === 'close'){
-        brackets = undefined
-        return first_symbols + new_cmd + latest_symbol
-    }else{
-        return new_cmd + latest_symbol // return line with close symbol
+
+    for (var [key, value] of simple_cmd) {
+        if (line.indexOf(key) !== -1) {
+            if (brackets[brackets.length-1] == "close"){
+                delete brackets[brackets.length-1]
+                return '    '.repeat(num_space-1) + "}\n" + '    '.repeat(num_space-1) + '            ' + value + line.slice(key.length, line.length) + ';'
+            }
+            return '    '.repeat(num_space) + value + line.slice(key.length, line.length) + ';'
+        }
     }
+    return ''
 }
 
-// while dsa == 23:
-//     print('dsada')
+
+// It's piece of python code for check my code
+// n = 23
+// while n == 23:
+//     print('Hello')
+//     print(n)
+// print('dsada')
+
+// while n == 23:
+//     print('Hello')
+//     while n == 2:
+//         print(n)
+// print('dsada')
+
+//while n == 23:
+//     while n == 2:
+//         print(n)
+//     print(n)
+//print('dsada')
