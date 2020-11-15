@@ -1,7 +1,9 @@
 var cmd_with_braces = new Map([
     ['def', 'function'], 
     ['while', 'while'], 
-    ['if', 'if']
+    ['elif', 'else if'],
+    ['if', 'if'],
+    ['else', 'else']
   ]); // map with syntax language
 var simple_cmd = new Map([
     ['print', 'Console.WriteLine']
@@ -36,22 +38,22 @@ function searchCommand(line){  // function for search command in line
     }
 
     if (brackets[brackets.length-1] === 'open'){ // Check if brackets are open
-        console.log(line, line.slice(0, num_space*4) != '    '.repeat(num_space))
         if (line.slice(0, num_space*4) != '    '.repeat(num_space)) {
             brackets[brackets.length-1] = "close"
             num_space -= 1
-            console.log('close')
         }
     }
-
-    //console.log(line, brackets, num_space)
 
     for (var [key, value] of cmd_with_braces ) {
         if (line.indexOf(key) !== -1) {
             brackets.push("open");
             num_space += 1
             if (value == "function"){
-                return '    '.repeat(num_space-1) + value + line.slice(key.length, line.length-1) + '{'
+                return '    '.repeat(num_space-1) + value + line.slice(key.length, line.length-3) + '{'
+            }else if (value == 'else'){
+                return '    '.repeat(num_space-1)  + '}' + value + '{'
+            }else if (value == 'else if'){
+                return '    '.repeat(num_space-1) + '}' + value + ' (' + line.slice(key.length, line.length-1) + '){'
             }else{
                 return '    '.repeat(num_space-1) + value + ' (' + line.slice(key.length, line.length-1) + '){'
             }
@@ -62,11 +64,16 @@ function searchCommand(line){  // function for search command in line
         if (line.indexOf(key) !== -1) {
             if (brackets[brackets.length-1] == "close"){
                 delete brackets[brackets.length-1]
-                return '    '.repeat(num_space-1) + "}\n" + '    '.repeat(num_space-1) + '            ' + value + line.slice(key.length, line.length) + ';'
+                return '    '.repeat(num_space) + "}\n" + '    '.repeat(num_space) + '            ' + value + line.slice(key.length+num_space*4, line.length) + ';'
             }
-            return '    '.repeat(num_space) + value + line.slice(key.length, line.length) + ';'
+            return '    '.repeat(num_space) + value + line.slice(key.length+num_space*4, line.length) + ';'
         }
     }
+
+    if (line == '\n' && brackets[brackets.length-1] === "close"){
+        return '}'
+    }
+
     return ''
 }
 
