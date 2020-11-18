@@ -1,13 +1,158 @@
-textarea {
+body {
+    margin: 0px;
+    padding: 0px;
+}
+
+header {
+    display: flex;
+    height: 80px;
+    background-color: #4688E1;
+}
+
+
+.site-title {
+    padding-top: 1px;
+    padding-left: 10%;
+}
+
+.site-title h1 {
+    color: white;
+}
+
+.header-links {
+    margin-top: 30px;
+    margin-left: 50%;
+}
+
+.header-links a{
+    color: white;
+    text-decoration: none;
+    padding: 16px;
+    font-size: 20px;
+}
+
+.header-links a:hover{
+    background-color: rgb(95, 95, 219);
+    border-radius: 20px;
+}                               
+    
+.bar {
+    margin: 25px 0px 20px 28%;
+    height: 55px;
+    width: 600px;
+    border-radius: 30px;
+    background-color: #4688E1;
+}
+
+.select-converter {
+    display: flex;
+    margin-left: 170px;
+    text-align: center;
+}
+
+.select-converter span {
+    color: white;
+    text-decoration: none;
+    font-size: 20px;
+    padding: 16px;
+    border-radius: 20px;
+}
+
+.bar span.active{
+    background-color: rgb(42, 60, 163);
+}
+
+.bar span:hover:not(.active){
+    background-color: rgb(95, 95, 219);
+}
+
+.select-language {
+    display: inline-flex;
+    margin: 10px 0px 10px 70px;
+}
+
+.language-bar-1 {
+    margin-left: 10px;
+    height: 55px;
+    width: 600px;
+    border-radius: 30px;
+    background-color: #4688E1;
+}
+
+.from-convert {
+    display: flex;
+    margin-left: 140px;
+    text-align: center;
+}
+
+.from-convert span {
+    color: white;
+    border-radius: 20px;
+    text-decoration: none;
+    font-size: 20px;
+    padding: 16px;
+}
+
+.from-convert span.active{
+    background-color: rgb(42, 60, 163);
+}
+
+.from-convert span:hover:not(.active){
+    background-color: rgb(95, 95, 219);
+}
+
+.language-bar-2 {
+    margin-left: 50px;
+    height: 55px;
+    width: 600px;
+    border-radius: 30px;
+    background-color: #4688E1;
+}
+
+.to-convert {
+    display: flex;
+    margin-left: 140px;
+    text-align: center;
+}
+
+.to-convert span {
+    color: white;
+    border-radius: 20px;
+    text-decoration: none;
+    font-size: 20px;
+    padding: 16px;
+}
+
+.to-convert span.active{
+    background-color: rgb(42, 60, 163);
+}
+
+.to-convert span:hover:not(.active){
+    background-color: rgb(95, 95, 219);
+}
+
+.fill-text {
     margin-left: 20px;
+}
+
+textarea {
+    margin-left: 50px;
     margin-top: 30px;
     overflow-y: scroll;
-    width: 350px;
-    height: 300px;
-    font-size: 10px;
+    width: 600px;
+    height: 400px;
+    font-size: 14px;
 }
 
 .convert-button {
-    margin-left: 45%;
+    background-color: #4688E1;
+    border-radius: 20px;
+    color: white;
+    font-size: 20px;
+    margin-left: 47%;
     margin-top: 30px;
+}
+
+.convert-button :active {
+    background-color: rgb(95, 95, 219);
 }
